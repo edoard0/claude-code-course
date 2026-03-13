@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Architecture Styles</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg:          #f8f9fa;
+    --card-bg:     #ffffff;
+    --card-border: #f0f0f0;
+    --diagram-bg:  #fafafa;
+    --text:        #1a1a1a;
+    --text-muted:  #666666;
+    --text-li:     #333333;
+    --pros:        #15803d;
+    --cons:        #b91c1c;
+    --fit:         #2563eb;
+    --btn-bg:      #1a1a1a;
+    --btn-text:    #ffffff;
+    --shadow:      rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] {
+    --bg:          #0d1117;
+    --card-bg:     #161b22;
+    --card-border: #30363d;
+    --diagram-bg:  #0d1117;
+    --text:        #e6edf3;
+    --text-muted:  #8b949e;
+    --text-li:     #cdd9e5;
+    --pros:        #4ade80;
+    --cons:        #f87171;
+    --fit:         #60a5fa;
+    --btn-bg:      #e6edf3;
+    --btn-text:    #0d1117;
+    --shadow:      rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: background 0.2s, color 0.2s; }
+  h1 { text-align: center; padding: 40px 20px 10px; font-size: 2rem; color: var(--text); }
+  .subtitle { text-align: center; color: var(--text-muted); padding-bottom: 40px; font-size: 0.95rem; }
+  .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px var(--shadow); margin: 0 auto 40px; max-width: 1000px; overflow: hidden; border: 1px solid var(--card-border); transition: background 0.2s, border-color 0.2s; }
+  .card-header { padding: 20px 28px 16px; border-bottom: 1px solid var(--card-border); }
+  .card-header h2 { font-size: 1.3rem; color: var(--text); }
+  .card-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+  .diagram { padding: 24px 28px 48px; background: var(--diagram-bg); border-bottom: 1px solid var(--card-border); min-height: 220px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: flex-start; transition: background 0.2s; }
+  .diagram svg { transform-origin: top center; transition: transform 0.15s; }
+  .zoom-bar { position: absolute; bottom: 10px; right: 12px; display: flex; align-items: center; gap: 2px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 3px 6px; box-shadow: 0 1px 4px var(--shadow); z-index: 10; }
+  .zoom-bar button { background: none; border: none; cursor: pointer; color: var(--text); font-size: 1rem; font-weight: 700; width: 26px; height: 26px; border-radius: 4px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .zoom-bar button:hover { background: var(--card-border); }
+  .zoom-bar .zoom-pct { font-size: 0.72rem; color: var(--text-muted); min-width: 38px; text-align: center; font-variant-numeric: tabular-nums; }
+  .panels { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .panel { padding: 18px 20px; }
+  .panel + .panel { border-left: 1px solid var(--card-border); }
+  .panel h3 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .panel ul { list-style: none; padding: 0; }
+  .panel ul li { font-size: 0.83rem; line-height: 1.5; padding: 2px 0 2px 14px; position: relative; color: var(--text-li); }
+  .panel ul li::before { position: absolute; left: 0; }
+  .pros h3 { color: var(--pros); }
+  .pros ul li::before { content: "+"; color: var(--pros); font-weight: 700; }
+  .cons h3 { color: var(--cons); }
+  .cons ul li::before { content: "−"; color: var(--cons); font-weight: 700; }
+  .fit h3 { color: var(--fit); }
+  .fit ul li::before { content: "→"; color: var(--fit); }
+  #theme-btn {
+    position: fixed; top: 16px; right: 20px; z-index: 999;
+    background: var(--btn-bg); color: var(--btn-text);
+    border: none; border-radius: 8px; padding: 8px 14px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    box-shadow: 0 2px 6px var(--shadow); transition: background 0.2s, color 0.2s;
+  }
+  #theme-btn:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<button id="theme-btn" aria-label="Toggle dark mode">🌙 Dark</button>
+<h1>Software Architecture Styles</h1>
+<p class="subtitle">Fundamentals of Software Architecture — Chapters 10–17</p>
+
+<!-- 1. Layered -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 10 — Layered Architecture</h2>
+    <p>Organises code into horizontal layers; each layer serves the one above it.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  A["🖥️ Presentation Layer"]:::blue --> B["⚙️ Business Layer"]:::purple
+  B --> C["💾 Persistence Layer"]:::orange
+  C --> D["🗄️ Database Layer"]:::teal
+  classDef blue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef purple fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef orange fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef teal fill:#c3fae8,stroke:#0f766e,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Simple and familiar</li>
+        <li>Very low cost to build</li>
+        <li>Clear separation of concerns</li>
+        <li>No distributed complexity</li>
+        <li>Well-established pattern</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Monolithic deployments</li>
+        <li>Hard to scale independently</li>
+        <li>Sinkhole anti-pattern risk</li>
+        <li>Low agility</li>
+        <li>Not fault tolerant</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Internal business apps</li>
+        <li>Simple CRUD websites</li>
+        <li>Budget-constrained projects</li>
+        <li>Small-team MVPs</li>
+        <li>ERP / back-office tools</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Pipeline -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 11 — Pipeline Architecture</h2>
+    <p>Data flows through a series of stateless, single-purpose filters connected by unidirectional pipes.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph LR
+  A["📥 Producer"]:::blue -->|pipe| B["🔄 Transformer"]:::orange
+  B -->|pipe| C["✅ Tester"]:::orange
+  C -->|pipe| D["➕ Enricher"]:::orange
+  D -->|pipe| E["📤 Consumer"]:::green
+  classDef blue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef orange fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef green fill:#b2f2bb,stroke:#15803d,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Simple and elegant</li>
+        <li>Easy to add new steps</li>
+        <li>Filters are stateless</li>
+        <li>Great for batch processing</li>
+        <li>Low cost</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Point-to-point only</li>
+        <li>Not for interactive apps</li>
+        <li>No broadcast capability</li>
+        <li>Limited error handling</li>
+        <li>Sequential by nature</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>ETL data pipelines</li>
+        <li>Unix shell workflows</li>
+        <li>EDI document transforms</li>
+        <li>Log / data processing</li>
+        <li>Apache Camel workflows</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Microkernel -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 12 — Microkernel Architecture</h2>
+    <p>A minimal core system extended by independently deployable plug-in components.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph LR
+  P1["🔌 Plugin A"]:::plugin --> CS
+  P2["🔌 Plugin B"]:::plugin --> CS
+  CS["⚙️ Core System"]:::core --> P3["🔌 Plugin C"]:::plugin
+  CS --> P4["🔌 Plugin D"]:::plugin
+  CS <--> REG["📋 Plugin Registry"]:::reg
+  classDef core fill:#d0bfff,stroke:#7c3aed,color:#000,font-weight:bold
+  classDef plugin fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef reg fill:#fff3bf,stroke:#b45309,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Pluggable and extensible</li>
+        <li>Isolates volatile code</li>
+        <li>Runtime extensibility</li>
+        <li>Easy to customise</li>
+        <li>Low cost for core</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Monolithic core</li>
+        <li>Plugin API design is hard</li>
+        <li>Core can become bloated</li>
+        <li>Limited scalability</li>
+        <li>Registry overhead</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>IDEs (VS Code, Eclipse)</li>
+        <li>Tax filing software</li>
+        <li>Insurance claims platforms</li>
+        <li>Product-based SaaS</li>
+        <li>Highly customisable tools</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Service-Based -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 13 — Service-Based Architecture</h2>
+    <p>Coarse-grained domain services share a single monolithic database; simpler than microservices.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  UI["🖥️ User Interface"]:::blue --> S1["📦 Order Service"]:::svc
+  UI --> S2["💳 Payment Service"]:::svc
+  UI --> S3["👤 Customer Service"]:::svc
+  UI --> S4["📊 Reporting Service"]:::svc
+  S1 & S2 & S3 & S4 --> DB[("🗄️ Shared Database")]:::db
+  classDef blue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef svc fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef db fill:#c3fae8,stroke:#0f766e,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Simpler than microservices</li>
+        <li>Domain isolation</li>
+        <li>Independent deployments</li>
+        <li>DB transactions still possible</li>
+        <li>Good fault tolerance</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Shared DB is a bottleneck</li>
+        <li>Coarser granularity</li>
+        <li>Schema change coupling</li>
+        <li>Less elastic</li>
+        <li>Table-sharing risk</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Financial services apps</li>
+        <li>Healthcare claims</li>
+        <li>Retail order management</li>
+        <li>Mid-size e-commerce</li>
+        <li>CRM systems</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 5. EDA Broker -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 14 — Event-Driven: Broker Topology</h2>
+    <p>Events are published to a broker; consumers react independently with no central coordinator.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph LR
+  P1["📡 Producer A"]:::prod --> BR{{"📨 Message Broker\n(Topic/Queue)"}}:::broker
+  P2["📡 Producer B"]:::prod --> BR
+  BR --> C1["⚡ Consumer 1"]:::cons
+  BR --> C2["⚡ Consumer 2"]:::cons
+  BR --> C3["⚡ Consumer 3"]:::cons
+  classDef prod fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef broker fill:#fff3bf,stroke:#b45309,color:#000,font-weight:bold
+  classDef cons fill:#b2f2bb,stroke:#15803d,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Highly decoupled</li>
+        <li>Extremely scalable</li>
+        <li>Async processing</li>
+        <li>Easy to add consumers</li>
+        <li>Fire-and-forget</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>No workflow visibility</li>
+        <li>Complex error handling</li>
+        <li>Data loss risk</li>
+        <li>Eventual consistency</li>
+        <li>Hard to test / debug</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>IoT event streams</li>
+        <li>Real-time notifications</li>
+        <li>Stock market feeds</li>
+        <li>Audit logging</li>
+        <li>Social media activity</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 6. EDA Mediator -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 14 — Event-Driven: Mediator Topology</h2>
+    <p>A central mediator orchestrates multi-step event workflows with error handling and retries.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  IE["📥 Initiating Event"] --> Q["📬 Event Queue"]:::queue
+  Q --> M["🎛️ Event Mediator"]:::med
+  M --> CH1["📢 Order Channel"]:::ch
+  M --> CH2["📢 Payment Channel"]:::ch
+  M --> CH3["📢 Email Channel"]:::ch
+  CH1 --> EP1["⚙️ Order Processor"]:::proc
+  CH2 --> EP2["⚙️ Payment Processor"]:::proc
+  CH3 --> EP3["⚙️ Email Processor"]:::proc
+  classDef queue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef med fill:#fff3bf,stroke:#b45309,color:#000,font-weight:bold
+  classDef ch fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef proc fill:#b2f2bb,stroke:#15803d,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Workflow visibility</li>
+        <li>Error handling and retries</li>
+        <li>Transactional control</li>
+        <li>Centralised monitoring</li>
+        <li>Can model complex flows</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Mediator = single point of failure</li>
+        <li>More coupled than broker</li>
+        <li>Performance bottleneck</li>
+        <li>Complex to configure</li>
+        <li>God-object risk</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Order fulfillment workflows</li>
+        <li>Insurance claims processing</li>
+        <li>Healthcare workflows</li>
+        <li>Multi-step booking systems</li>
+        <li>Claims adjudication</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 7. Space-Based -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 15 — Space-Based Architecture</h2>
+    <p>Eliminates the DB bottleneck by distributing state across in-memory processing units.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  subgraph PUs["Processing Units (elastic)"]
+    PU1["🖥️ PU 1\n+ In-Memory Grid"]:::pu
+    PU2["🖥️ PU 2\n+ In-Memory Grid"]:::pu
+    PU3["🖥️ PU 3\n+ In-Memory Grid"]:::pu
+  end
+  PUs <--> MW["⚡ Virtualised Middleware\nMessaging Grid | Data Grid | Processing Grid"]:::mw
+  MW --> DP["🔄 Data Pump"]:::pump
+  DP --> DB[("🗄️ Database")]:::db
+  classDef pu fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef mw fill:#fff3bf,stroke:#b45309,color:#000,font-weight:bold
+  classDef pump fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef db fill:#c3fae8,stroke:#0f766e,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Extreme scalability</li>
+        <li>High elasticity</li>
+        <li>No database bottleneck</li>
+        <li>Handles traffic spikes</li>
+        <li>Near-linear scale-out</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Very complex to build</li>
+        <li>Expensive infrastructure</li>
+        <li>Data collision risk</li>
+        <li>Hard to test</li>
+        <li>Eventual consistency</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Concert / event ticketing</li>
+        <li>Online auctions</li>
+        <li>Flash sales</li>
+        <li>Fantasy sports platforms</li>
+        <li>High-volume gaming</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 8. SOA -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 16 — Orchestration-Driven SOA</h2>
+    <p>Enterprise services reused across the org via a central orchestration engine and service bus.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  BS["🏢 Business Services"]:::blue --> OE["🎛️ Orchestration Engine\n(ESB)"]:::orch
+  OE --> ES["🔧 Enterprise Services"]:::svc
+  OE --> AS["📱 Application Services"]:::svc
+  OE --> IS["🛠️ Infrastructure Services"]:::svc
+  ES & AS & IS --> DB[("🗄️ Shared DB")]:::db
+  classDef blue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef orch fill:#fff3bf,stroke:#b45309,color:#000,font-weight:bold
+  classDef svc fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef db fill:#c3fae8,stroke:#0f766e,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Enterprise-wide reuse</li>
+        <li>Legacy system integration</li>
+        <li>Centralised governance</li>
+        <li>Unified service contracts</li>
+        <li>Cross-org data sharing</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Massive coupling</li>
+        <li>Slow deployments</li>
+        <li>ESB becomes a bottleneck</li>
+        <li>Overly complex</li>
+        <li>Teams blocked on each other</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Legacy enterprise integration</li>
+        <li>Cross-org data sharing</li>
+        <li>Old ERP integrations</li>
+        <li>⚠️ Avoid for new systems</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 9. Microservices -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 17 — Microservices Architecture</h2>
+    <p>Fine-grained, independently deployed services each owning their own data store.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  GW["🌐 API Gateway"]:::gw
+  GW --> MS1["👤 User Svc\n+ DB"]:::svc
+  GW --> MS2["📦 Order Svc\n+ DB"]:::svc
+  GW --> MS3["💳 Payment Svc\n+ DB"]:::svc
+  GW --> MS4["📊 Analytics Svc\n+ DB"]:::svc
+  MS1 & MS2 & MS3 & MS4 <--> SM["🕸️ Service Mesh\n(sidecar proxies)"]:::mesh
+  classDef gw fill:#a5d8ff,stroke:#2563eb,color:#000,font-weight:bold
+  classDef svc fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef mesh fill:#ffd8a8,stroke:#c2410c,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Extreme scalability</li>
+        <li>Team autonomy</li>
+        <li>Fault isolation</li>
+        <li>Technology diversity</li>
+        <li>Continuous delivery</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Distributed system complexity</li>
+        <li>Data consistency is hard</li>
+        <li>High operational overhead</li>
+        <li>Network latency</li>
+        <li>Requires DevOps maturity</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Netflix / Amazon scale apps</li>
+        <li>Global SaaS platforms</li>
+        <li>Multi-team large orgs</li>
+        <li>High-volume APIs</li>
+        <li>Cloud-native products</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Constants ──────────────────────────────────────────────────────────────
+  const ZOOM_STEP = 0.25;
+  const ZOOM_MIN  = 0.5;
+  const ZOOM_MAX  = 3;
+  const MERMAID_THEME = { light: 'neutral', dark: 'dark' };
+  const MERMAID_CONFIG = {
+    startOnLoad: false,
+    flowchart: { nodeSpacing: 60, rankSpacing: 80, curve: 'basis', useMaxWidth: false },
+  };
+
+  // ── Capture source before Mermaid processes elements ──────────────────────
+  const sources = [];
+  document.querySelectorAll('.mermaid').forEach(el => sources.push(el.textContent));
+
+  // ── Zoom controls (injected after each render) ────────────────────────────
+  const zoomScales = {};
+
+  function addZoomControls() {
+    document.querySelectorAll('.diagram').forEach((diag, idx) => {
+      diag.querySelector('.zoom-bar')?.remove();  // remove stale controls on re-render
+
+      const bar = document.createElement('div');
+      bar.className = 'zoom-bar';
+      bar.setAttribute('aria-label', 'Diagram zoom controls');
+      bar.innerHTML = `
+        <button data-action="out" aria-label="Zoom out" title="Zoom out">−</button>
+        <span class="zoom-pct">100%</span>
+        <button data-action="in"  aria-label="Zoom in"  title="Zoom in">+</button>
+        <button data-action="reset" aria-label="Reset zoom" title="Reset zoom" style="font-size:0.8rem">⟳</button>
+      `;
+      diag.appendChild(bar);
+
+      zoomScales[idx] = zoomScales[idx] || 1;
+      const pctEl = bar.querySelector('.zoom-pct');
+
+      function applyZoom(next) {
+        const s = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, next));
+        zoomScales[idx] = s;
+        const svg = diag.querySelector('svg');
+        if (!svg) return;
+        // Store original height once so we can grow the container correctly
+        if (!svg.dataset.origH) svg.dataset.origH = svg.getBoundingClientRect().height;
+        svg.style.transform = `scale(${s})`;
+        // Expand container so scaled-up SVG isn't clipped
+        diag.style.minHeight = `${parseFloat(svg.dataset.origH) * s + 52}px`;
+        pctEl.textContent = `${Math.round(s * 100)}%`;
+      }
+
+      bar.addEventListener('click', e => {
+        const action = e.target.closest('[data-action]')?.dataset.action;
+        if (action === 'in')    applyZoom(zoomScales[idx] + ZOOM_STEP);
+        if (action === 'out')   applyZoom(zoomScales[idx] - ZOOM_STEP);
+        if (action === 'reset') { zoomScales[idx] = 1; applyZoom(1); diag.style.minHeight = ''; }
+      });
+    });
+  }
+
+  // ── Mermaid helpers ────────────────────────────────────────────────────────
+  function getMermaidTheme() {
+    return document.documentElement.dataset.theme === 'dark'
+      ? MERMAID_THEME.dark : MERMAID_THEME.light;
+  }
+
+  async function renderMermaid() {
+    // Reset diagram heights and SVG transforms
+    document.querySelectorAll('.diagram').forEach(d => { d.style.minHeight = ''; });
+    const els = document.querySelectorAll('.mermaid');
+    els.forEach((el, i) => {
+      el.removeAttribute('data-processed');
+      el.innerHTML = sources[i];
+      delete el.dataset.origH;
+    });
+    mermaid.initialize({ ...MERMAID_CONFIG, theme: getMermaidTheme() });
+    await mermaid.run({ nodes: els });
+    addZoomControls();
+  }
+
+  // ── Initial render ─────────────────────────────────────────────────────────
+  mermaid.initialize({ ...MERMAID_CONFIG, theme: getMermaidTheme() });
+  document.addEventListener('DOMContentLoaded', async () => {
+    await mermaid.run();
+    addZoomControls();
+  });
+
+  // ── Dark mode toggle ───────────────────────────────────────────────────────
+  const btn = document.getElementById('theme-btn');
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.dataset.theme = 'dark';
+    btn.textContent = '☀️ Light';
+  }
+  btn.addEventListener('click', async () => {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    document.documentElement.dataset.theme = isDark ? '' : 'dark';
+    if (isDark) { delete document.documentElement.dataset.theme; }
+    btn.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    await renderMermaid();
+  });
+</script>
+</body>
+</html>

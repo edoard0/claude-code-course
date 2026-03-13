@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdftotext /Users/edoardo.romani/claude-code-course/fundamentals_of_software_architecture_an_engineeri.pdf -)",
+      "mcp__claude_ai_Excalidraw__read_me",
+      "mcp__claude_ai_Excalidraw__create_view",
+      "Read(//usr/local/bin/**)",
+      "Bash(brew list:*)"
+    ]
+  }
+}
