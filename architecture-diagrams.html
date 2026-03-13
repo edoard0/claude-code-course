@@ -642,11 +642,9 @@ graph TD
   }
 
   // ── Initial render ─────────────────────────────────────────────────────────
+  // Script is at bottom of <body> so DOM is already ready — no need for DOMContentLoaded
   mermaid.initialize({ ...MERMAID_CONFIG, theme: getMermaidTheme() });
-  document.addEventListener('DOMContentLoaded', async () => {
-    await mermaid.run();
-    addZoomControls();
-  });
+  mermaid.run().then(addZoomControls);
 
   // ── Dark mode toggle ───────────────────────────────────────────────────────
   const btn = document.getElementById('theme-btn');
