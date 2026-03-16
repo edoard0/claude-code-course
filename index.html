@@ -79,10 +79,63 @@
 <h1>Software Architecture Styles</h1>
 <p class="subtitle">Fundamentals of Software Architecture — Chapters 10–17</p>
 
-<!-- 1. Layered -->
+<!-- 1. Monolithic -->
 <div class="card">
   <div class="card-header">
-    <h2>Ch. 10 — Layered Architecture</h2>
+    <h2>Ch. 10 — Monolithic Architecture</h2>
+    <p>The entire application is built and deployed as a single, unified unit.</p>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+graph TD
+  UI["🖥️ User Interface"]:::blue --> BL["⚙️ Business Logic"]:::purple
+  BL --> DAL["💾 Data Access Layer"]:::orange
+  DAL --> DB[("🗄️ Database")]:::teal
+  BL --> FS["📁 File System"]:::teal
+  classDef blue fill:#a5d8ff,stroke:#2563eb,color:#000
+  classDef purple fill:#d0bfff,stroke:#7c3aed,color:#000
+  classDef orange fill:#ffd8a8,stroke:#c2410c,color:#000
+  classDef teal fill:#c3fae8,stroke:#0f766e,color:#000
+    </pre>
+  </div>
+  <div class="panels">
+    <div class="panel pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Simple to develop initially</li>
+        <li>Easy to test end-to-end</li>
+        <li>No network overhead</li>
+        <li>Simple deployment</li>
+        <li>Low operational complexity</li>
+      </ul>
+    </div>
+    <div class="panel cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Scales as a whole unit only</li>
+        <li>Long build and deploy cycles</li>
+        <li>Technology lock-in</li>
+        <li>Growing complexity over time</li>
+        <li>Single point of failure</li>
+      </ul>
+    </div>
+    <div class="panel fit">
+      <h3>Best Fit</h3>
+      <ul>
+        <li>Early-stage startups</li>
+        <li>Small teams</li>
+        <li>Simple domains</li>
+        <li>Proof of concept apps</li>
+        <li>Low-traffic internal tools</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Layered -->
+<div class="card">
+  <div class="card-header">
+    <h2>Ch. 9 — Layered Architecture</h2>
     <p>Organises code into horizontal layers; each layer serves the one above it.</p>
   </div>
   <div class="diagram">
