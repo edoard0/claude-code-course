@@ -5,7 +5,16 @@
       "mcp__claude_ai_Excalidraw__read_me",
       "mcp__claude_ai_Excalidraw__create_view",
       "Read(//usr/local/bin/**)",
-      "Bash(brew list:*)"
+      "Bash(brew list:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pdftotext fundamentals_of_software_architecture_an_engineeri.pdf -)",
+      "Bash(python3:*)",
+      "Bash(python3 -c \"help\\(''''modules''''\\)\")",
+      "Bash(brew install:*)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(pip3 install:*)"
     ]
   }
 }
